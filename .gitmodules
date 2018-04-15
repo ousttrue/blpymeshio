@@ -1,0 +1,3 @@
+[submodule "pymeshio"]
+	path = pymeshio
+	url = git@github.com:ousttrue/pymeshio.git
