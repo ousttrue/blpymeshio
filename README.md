@@ -1,11 +1,18 @@
-# BLPymeshIO
+# BlenderPymeshIO
 
 this repository is separated from git@github.com:ousttrue/pymeshio.git
 
-## create zip archive(Windows)
+## Install as blender addon
 
-powershell
-```
-> & 'C:\Program Files\7-Zip\7z.exe' a -tzip pymeshio.zip .\blpymeshio\ -xr!".git"
-```
+download archive form below url.
 
+* https://github.com/ousttrue/blpymeshio/releases
+
+launch blender, then menu (File)-(User Preferences).
+select (Add-Ons) tab.
+
+[install Add-on from file...] button
+
+## create zip archive
+
+* archive/_create_zip.py
