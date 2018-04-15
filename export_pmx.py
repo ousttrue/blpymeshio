@@ -3,9 +3,9 @@
 import io
 from . import bl
 from . import exporter
-from .pymeshio import pmx
-from .pymeshio import common
-from .pymeshio.pmx import writer
+from pymeshio import pmx
+from pymeshio import common
+from pymeshio.pmx import writer
 
 
 def near(x, y, EPSILON=1e-5):
@@ -292,7 +292,7 @@ def create_pmx(ex, enable_bdef4=True):
         return ex.oneSkinMesh.morphList[0].offsets[rel_index][0]
 
     # 表情
-    from .pymeshio import englishmap
+    from pymeshio import englishmap
     for i, m in enumerate(ex.oneSkinMesh.morphList[1:]):
         # name
         english_name="morph: %d" % i

@@ -2,7 +2,7 @@
 import bpy
 from . import vertexarray
 from .. import bl
-from ..pymeshio import englishmap
+from pymeshio import englishmap
 
 
 class Morph(object):

@@ -70,9 +70,9 @@ if "bpy" in locals():
     imp.reload(englishmap)
     print("reloaded modules: "+__name__)
 else:
-    from .pymeshio import pmd
-    from .pymeshio.pmd import reader
-    from .pymeshio import englishmap
+    from pymeshio import pmd
+    from pymeshio.pmd import reader
+    from pymeshio import englishmap
 
     # for 2.5
     import bpy

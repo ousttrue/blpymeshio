@@ -37,10 +37,10 @@ import io
 
 from . import bl
 from . import exporter
-from .pymeshio import common
-from .pymeshio import pmd
-from .pymeshio import englishmap
-from .pymeshio.pmd import writer
+from pymeshio import common
+from pymeshio import pmd
+from pymeshio import englishmap
+from pymeshio.pmd import writer
 
 
 def near(x, y, EPSILON=1e-5):

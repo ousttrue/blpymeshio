@@ -46,7 +46,7 @@ bl_addon_info = {
 
 import os
 import sys
-from .pymeshio.mqo import reader
+from pymeshio.mqo import reader
 
 # for 2.5
 import bpy

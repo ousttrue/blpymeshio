@@ -13,7 +13,7 @@ if "bpy" in locals():
     print("reloaded modules: "+__name__)
 else:
     from . import bl
-    from .pymeshio import pmx
+    from pymeshio import pmx
     import bpy
     import os
     print("imported modules: "+__name__)
@@ -608,17 +608,17 @@ def _execute(filepath, **kwargs):
     importer 本体
     """
     if filepath.lower().endswith(".pmd"):
-        from .pymeshio.pmd import reader
+        from pymeshio.pmd import reader
         pmd_model=reader.read_from_file(filepath)
         if not pmd_model:
             return
 
         print("convert pmd to pmx...")
-        from .pymeshio import converter
+        from pymeshio import converter
         import_pmx_model(filepath, converter.pmd_to_pmx(pmd_model), **kwargs)
 
     elif filepath.lower().endswith(".pmx"):
-        from .pymeshio.pmx import reader
+        from pymeshio.pmx import reader
         import_pmx_model(filepath, reader.read_from_file(filepath), **kwargs)
 
     else:

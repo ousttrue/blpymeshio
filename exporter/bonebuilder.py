@@ -1,6 +1,6 @@
 # coding: utf-8
 from .. import bl
-from ..pymeshio import englishmap
+from pymeshio import englishmap
 
 
 class IKChain(object):

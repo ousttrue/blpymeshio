@@ -1,4 +1,9 @@
 # coding: utf-8
+import os
+import sys
+append_path=os.path.join(os.path.dirname(__file__), 'pymeshio')
+sys.path.append(append_path)
+
 
 bl_info={
     "category": "Import-Export",
