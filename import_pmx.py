@@ -1,22 +1,9 @@
 # coding: utf-8
-"""
-PMXモデルをインポートする。
+import os
+from pymeshio import pmx, pmd_from_file, pmd_to_pmx, pmx_from_file # pylint: disable=E0611
+import bpy # pylint: disable=E0401
 
-1マテリアル、1オブジェクトで作成する。
-PMDはPMXに変換してからインポートする。
-"""
-
-if "bpy" in locals():
-    import imp
-    imp.reload(bl)
-    imp.reload(pmx)
-    print("reloaded modules: "+__name__)
-else:
-    from . import bl
-    from pymeshio import pmx
-    import bpy
-    import os
-    print("imported modules: "+__name__)
+from . import bl
 
 
 def convert_coord(pos):
@@ -396,7 +383,7 @@ def __create_armature(bones, display_slots):
     # create bone group
     bl.enterObjectMode()
     pose = bl.object.getPose(armature_object)
-    bone_groups={}
+    #bone_groups={}
     for i, ds in enumerate(display_slots):
         #print(ds)
         g=bl.object.createBoneGroup(armature_object, ds.name, "THEME%02d" % (i+1))
@@ -405,7 +392,7 @@ def __create_armature(bones, display_slots):
                 name=bones[index].name
                 try:
                     pose.bones[name].bone_group=g
-                except KeyError as e:
+                except KeyError:
                     print("pose %s is not found" % name)
 
     bl.enterObjectMode()
@@ -564,9 +551,9 @@ def import_pmx_model(filepath, model, import_mesh, import_physics, import_scale,
             # assign all vertext to group
             for i, v in enumerate(mesh.vertices):
                 bl.object.assignVertexGroup(mesh_object,
-                        bl.MMD_SHAPE_GROUP_NAME, i, 0);
+                        bl.MMD_SHAPE_GROUP_NAME, i, 0)
             # create base key
-            baseShapeBlock=bl.object.addShapeKey(mesh_object, bl.BASE_SHAPE_NAME)
+            bl.object.addShapeKey(mesh_object, bl.BASE_SHAPE_NAME)
             mesh.update()
 
             # each morph
@@ -608,19 +595,15 @@ def _execute(filepath, **kwargs):
     importer 本体
     """
     if filepath.lower().endswith(".pmd"):
-        import pymeshio
-        pmd_model=pymeshio.pmd_from_file(filepath)
+        pmd_model=pmd_from_file(filepath)
         if not pmd_model:
             return
 
         print("convert pmd to pmx...")
-        from pymeshio import converter
-        import_pmx_model(filepath, converter.pmd_to_pmx(pmd_model), **kwargs)
+        import_pmx_model(filepath, pmd_to_pmx(pmd_model), **kwargs)
 
     elif filepath.lower().endswith(".pmx"):
-        from pymeshio.pmx import reader
-        import_pmx_model(filepath, reader.read_from_file(filepath), **kwargs)
+        import_pmx_model(filepath, pmx_from_file(filepath), **kwargs)
 
     else:
         print("unknown file type: ", filepath)
-
