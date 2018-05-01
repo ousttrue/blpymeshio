@@ -20,23 +20,12 @@ bl_info={
 }
 
 
-if 'bpy' in locals():
-    # reload
-    import imp
-    imp.reload(bl)
-    imp.reload(import_pmx)
-    imp.reload(export_pmx)
-    imp.reload(import_pmd)
-    imp.reload(export_pmd)
-    imp.reload(import_mqo)
-    imp.reload(export_mqo)
-    #print("reloaded modules: "+__name__)
-else:
-    # import
-    import bpy
-    import bpy_extras.io_utils
-    from . import bl
-    #print("imported modules: "+__name__)
+# import
+import bpy # pylint: disable=E0401
+import bpy_extras.io_utils # pylint: disable=E0401
+from . import bl
+#print("imported modules: "+__name__)
+
 
 if not bpy.context.user_preferences.system.use_international_fonts:
     print("enable use_international_fonts")
