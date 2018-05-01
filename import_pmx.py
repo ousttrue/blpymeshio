@@ -424,11 +424,11 @@ def __create_armature(bones, display_slots):
     return armature_object
 
 
-def import_pmx_model(filepath, model, import_mesh, import_physics, **kwargs):
+def import_pmx_model(filepath, model, import_mesh, import_physics, import_scale, **kwargs):
     if not model:
         print("fail to load %s" % filepath)
         return False
-    print(model)
+    #print(model)
 
     # メッシュをまとめるエンプティオブジェクト
     model_name=model.name

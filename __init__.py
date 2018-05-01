@@ -21,6 +21,7 @@ bl_info={
 
 
 if 'bpy' in locals():
+    # reload
     import imp
     imp.reload(bl)
     imp.reload(import_pmx)
@@ -29,12 +30,13 @@ if 'bpy' in locals():
     imp.reload(export_pmd)
     imp.reload(import_mqo)
     imp.reload(export_mqo)
-    print("reloaded modules: "+__name__)
+    #print("reloaded modules: "+__name__)
 else:
+    # import
     import bpy
     import bpy_extras.io_utils
     from . import bl
-    print("imported modules: "+__name__)
+    #print("imported modules: "+__name__)
 
 if not bpy.context.user_preferences.system.use_international_fonts:
     print("enable use_international_fonts")
@@ -88,7 +90,13 @@ class ImportPmx(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
     import_physics=bpy.props.BoolProperty(
             name='import physics objects', 
             description='import rigid body and constraints',
-            default=True)
+            default=False)
+
+    import_scale = bpy.props.FloatProperty(
+            name='import scale',
+            description='scaling value',
+            min=0.0001, max=1000000.0,
+            soft_min=0.001, soft_max=100.0, default=1.58/20)
 
     def execute(self, context):
         from . import import_pmx
@@ -261,4 +269,3 @@ def unregister():
 
 if __name__=='__main__':
     register()
-
