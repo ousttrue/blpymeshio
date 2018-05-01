@@ -608,8 +608,8 @@ def _execute(filepath, **kwargs):
     importer 本体
     """
     if filepath.lower().endswith(".pmd"):
-        from pymeshio.pmd import reader
-        pmd_model=reader.read_from_file(filepath)
+        import pymeshio
+        pmd_model=pymeshio.pmd_from_file(filepath)
         if not pmd_model:
             return
 
