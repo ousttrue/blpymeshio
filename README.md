@@ -13,6 +13,12 @@ select (Add-Ons) tab.
 
 [install Add-on from file...] button
 
+## ToDo
+
+* [ ] default physics import to false
+* [ ] legacy import_pmd, import_mqo, export mqo to hide
+* [ ] add scaling option
+
 ## create zip archive
 
 * archive/_create_zip.py
