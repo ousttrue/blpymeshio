@@ -44,6 +44,9 @@ bl_addon_info = {
 
 import os
 import sys
+import bpy
+import bpy_extras.io_utils # pylint: disable=E0401
+
 
 class MQOMaterial(object):
     __slots__=[
@@ -298,3 +301,43 @@ def _execute(filepath='', scale=10, apply_modifier=False):
     else:
         bl.message('no active object !')
 
+
+class ExportMqo(bpy.types.Operator, bpy_extras.io_utils.ExportHelper):
+    '''Save a Metasequoia MQO file.'''
+    bl_idname = 'export_scene.metasequioa_mqo'
+    bl_label = 'Export MQO'
+
+    filename_ext = '.mqo'
+    filter_glob = bpy.props.StringProperty(
+            default='*.mqo', options={'HIDDEN'})
+
+    use_selection = bpy.props.BoolProperty(
+            name='Selection Only', 
+            description='Export selected objects only', 
+            default=False)
+
+    scale = bpy.props.FloatProperty(
+            name='Scale',
+            description='Scale the MQO by this value',
+            min=0.0001, max=1000000.0,
+            soft_min=0.001, soft_max=100.0, default=10.0)
+
+    apply_modifier = bpy.props.BoolProperty(
+            name='ApplyModifier',
+            description='Would apply modifiers',
+            default=False)
+
+    def execute(self, context):
+        bl.initialize('mqo_export', context.scene)
+        _execute(**self.as_keywords(
+            ignore=('check_existing', 'filter_glob', 'use_selection')))
+        bl.finalize()
+        return {'FINISHED'}
+
+    @classmethod
+    def menu_func(klass, self, context):
+        default_path=bpy.data.filepath.replace('.blend', '.mqo')
+        self.layout.operator(klass.bl_idname,
+                text='Metasequoia (.mqo)',
+                icon='PLUGIN'
+                ).filepath=default_path

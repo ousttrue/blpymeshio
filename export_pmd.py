@@ -41,6 +41,8 @@ from pymeshio import common
 from pymeshio import pmd
 from pymeshio import englishmap
 from pymeshio.pmd import writer
+import bpy
+import bpy_extras.io_utils # pylint: disable=E0401
 
 
 def near(x, y, EPSILON=1e-5):
@@ -400,3 +402,32 @@ def _execute(filepath='', **kwargs):
     bl.object.activate(active)
     return {'FINISHED'}
 
+
+class ExportPmd(bpy.types.Operator, bpy_extras.io_utils.ExportHelper):
+    '''Export to PMD file format (.pmd)'''
+    bl_idname = 'export_scene.mmd_pmd'
+    bl_label = 'Export PMD'
+
+    filename_ext = '.pmd'
+    filter_glob = bpy.props.StringProperty(
+            default='*.pmd', options={'HIDDEN'})
+
+    use_selection = bpy.props.BoolProperty(
+            name='Selection Only', 
+            description='Export selected objects only', 
+            default=False)
+
+    def execute(self, context):
+        bl.initialize('pmd_export', context.scene)
+        _execute(**self.as_keywords(
+            ignore=('check_existing', 'filter_glob', 'use_selection')))
+        bl.finalize()
+        return {'FINISHED'}
+
+    @classmethod
+    def menu_func(klass, self, context):
+        default_path=bpy.data.filepath.replace('.blend', '.pmd')
+        self.layout.operator(klass.bl_idname,
+                text='Miku Miku Dance Model(.pmd)',
+                icon='PLUGIN'
+                ).filepath=default_path

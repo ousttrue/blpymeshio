@@ -6,6 +6,8 @@ from . import exporter
 from pymeshio import pmx
 from pymeshio import common
 from pymeshio.pmx import writer
+import bpy
+import bpy_extras.io_utils # pylint: disable=E0401
 
 
 def near(x, y, EPSILON=1e-5):
@@ -445,3 +447,32 @@ def _execute(filepath):
         writer.write(f, model)
     return {'FINISHED'}
 
+
+class ExportPmx(bpy.types.Operator, bpy_extras.io_utils.ExportHelper):
+    '''Export to PMX file format (.pmx)'''
+    bl_idname = 'export_scene.mmd_pmx'
+    bl_label = 'Export PMX'
+
+    filename_ext = '.pmx'
+    filter_glob = bpy.props.StringProperty(
+            default='*.pmx', options={'HIDDEN'})
+
+    use_selection = bpy.props.BoolProperty(
+            name='Selection Only', 
+            description='Export selected objects only', 
+            default=False)
+
+    def execute(self, context):
+        bl.initialize('pmx_export', context.scene)
+        _execute(**self.as_keywords(
+            ignore=('check_existing', 'filter_glob', 'use_selection')))
+        bl.finalize()
+        return {'FINISHED'}
+
+    @classmethod
+    def menu_func(klass, self, context):
+        default_path=bpy.data.filepath.replace('.blend', '.pmx')
+        self.layout.operator(klass.bl_idname,
+                text='Miku Miku Dance Model(.pmx)',
+                icon='PLUGIN'
+                ).filepath=default_path

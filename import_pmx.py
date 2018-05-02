@@ -607,3 +607,48 @@ def _execute(filepath, **kwargs):
 
     else:
         print("unknown file type: ", filepath)
+
+
+import bpy_extras.io_utils # pylint: disable=E0401
+class ImportPmx(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
+    '''Import from PMX Format(.pmx)(.pmd)'''
+    bl_idname='import_scene.mmd_pmx_pmd'
+    bl_label='Import PMX/PMD'
+    bl_options={'UNDO'}
+    filename_ext='.pmx;.pmd'
+    filter_glob=bpy.props.StringProperty(
+            default='*.pmx;*.pmd', options={'HIDDEN'})
+
+    #use_englishmap=bpy.props.BoolProperty(
+    #        name='use english map', 
+    #        description='Convert name to english(not implemented)',
+    #        default=False)
+
+    import_mesh=bpy.props.BoolProperty(
+            name='import mesh', 
+            description='import polygon mesh',
+            default=True)
+
+    import_physics=bpy.props.BoolProperty(
+            name='import physics objects', 
+            description='import rigid body and constraints',
+            default=False)
+
+    import_scale = bpy.props.FloatProperty(
+            name='import scale',
+            description='to meter(1.58/20)',
+            min=0.0001, max=1000000.0,
+            soft_min=0.001, soft_max=100.0, default=1.0)
+
+    def execute(self, context):
+        bl.initialize('pmx_import', context.scene)
+        _execute(**self.as_keywords(ignore=('filter_glob',)))
+        bl.finalize()
+        return  {'FINISHED'}
+
+    @classmethod
+    def menu_func(klass, self, context):
+        self.layout.operator(klass.bl_idname, 
+                text='MikuMikuDance model (.pmx)(.pmd)',
+                icon='PLUGIN'
+                )

@@ -4,11 +4,13 @@ here=pathlib.Path(__file__).parent
 root=here.parent
 pymeshio_path= root / 'pymeshio'
 sys.path.append(str(pymeshio_path.absolute()))
-print(sys.path)
+sys.path.append(str(root.parent.absolute())) # __init__.py
 
 import os
 import shutil
-import pymeshio
+import blpymeshio
+#print(blpymeshio.bl_info)
+
 
 def copy_files(dst: pathlib.Path, src: pathlib.Path, excludes=[], root: pathlib.Path=None):
 	if not root:
@@ -37,7 +39,9 @@ def copy_files(dst: pathlib.Path, src: pathlib.Path, excludes=[], root: pathlib.
 
 
 def main():
-	archive_file=f'pymeshio-{pymeshio.version}.zip'
+	v=blpymeshio.bl_info['version']
+	version_str=f'{v[0]}.{v[1]}.{v[2]}'
+	archive_file=f'blpymeshio-{version_str}.zip'
 	if os.path.exists(archive_file):
 		os.remove(archive_file)
 
@@ -46,15 +50,19 @@ def main():
 		os.makedirs(dst)
 
 	# dst, root, src
-	copy_files(dst / 'pymeshio', root, 
-            [root / 'pymeshio']
-	)
-	copy_files(dst / 'pymeshio', root / 'pymeshio', [
-		root / 'pymeshio/bench.py', 
-		root / 'pymeshio/setup.py', 
-		root / 'pymeshio/test', 
-		root/'pymeshio/examples'
-		])
+	copy_files(dst / 'blpymeshio', root,
+            [pymeshio_path]
+            )
+
+	if not (dst/'blpymeshio/pymeshio').exists():
+		os.makedirs(dst / 'blpymeshio/pymeshio')
+
+	copy_files(dst / 'blpymeshio/pymeshio', pymeshio_path, [
+            pymeshio_path / 'bench.py',
+            pymeshio_path / 'setup.py',
+            pymeshio_path / 'test',
+            pymeshio_path / 'examples'
+        ])
 
 	shutil.make_archive(str(archive_file)[0:-4], 'zip', dst)
 

@@ -608,3 +608,33 @@ def _execute(filepath='', scale=0.1):
             # create bone weight
             create_bone_weight(model, armature_object, objects)
 
+
+import bpy_extras.io_utils # pylint: disable=E0401
+class ImportMqo(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
+    '''Import from MQO file format (.mqo)'''
+    bl_idname = 'import_scene.metasequioa_mqo'
+    bl_label = 'Import MQO'
+    bl_options={'UNDO'}
+    filename_ext = '.mqo'
+    filter_glob = bpy.props.StringProperty(
+            default='*.mqo', options={'HIDDEN'})
+
+    scale = bpy.props.FloatProperty(
+            name='Scale',
+            description='Scale the MQO by this value',
+            min=0.0001, max=1000000.0,
+            soft_min=0.001, soft_max=100.0, default=0.1)
+
+    def execute(self, context):
+        bl.initialize('mqo_import', context.scene)
+        _execute(**self.as_keywords(
+            ignore=('filter_glob',)))
+        bl.finalize()
+        return {'FINISHED'}
+
+    @classmethod
+    def menu_func(klass, self, context):
+        self.layout.operator(klass.bl_idname,
+                text="Metasequoia (.mqo)",
+                icon='PLUGIN'
+                )

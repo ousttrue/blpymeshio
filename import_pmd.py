@@ -62,25 +62,17 @@ import os
 import sys
 import math
 
-if "bpy" in locals():
-    import imp
-    imp.reload(bl)
-    imp.reload(pmd)
-    imp.reload(reader)
-    imp.reload(englishmap)
-    print("reloaded modules: "+__name__)
-else:
-    from pymeshio import pmd
-    from pymeshio.pmd import reader
-    from pymeshio import englishmap
+from pymeshio import pmd
+from pymeshio.pmd import reader
+from pymeshio import englishmap
 
-    # for 2.5
-    import bpy
-    import mathutils
+# for 2.5
+import bpy
+import mathutils
 
-    # wrapper
-    from . import bl
-    print("imported modules: "+__name__)
+# wrapper
+from . import bl
+print("imported modules: "+__name__)
 
 
 xrange=range
@@ -802,3 +794,27 @@ def _execute(filepath=""):
 
     bl.object.activate(root)
 
+
+import bpy_extras.io_utils # pylint: disable=E0401
+class ImportPmd(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
+    '''Import from PMD file format (.pmd)'''
+    bl_idname = 'import_scene.mmd_pmd'
+    bl_label = 'Import PMD'
+    bl_options={'UNDO'}
+    filename_ext = '.pmd'
+    filter_glob = bpy.props.StringProperty(
+            default='*.pmd', options={'HIDDEN'})
+
+    def execute(self, context):
+        bl.initialize('pmd_import', context.scene)
+        _execute(**self.as_keywords(
+            ignore=('filter_glob',)))
+        bl.finalize()
+        return {'FINISHED'}
+
+    @classmethod
+    def menu_func(klass, self, context):
+        self.layout.operator(klass.bl_idname,
+                text='MikuMikuDance model (.pmd)',
+                icon='PLUGIN'
+                )
