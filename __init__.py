@@ -32,6 +32,25 @@ if not bpy.context.user_preferences.system.use_international_fonts:
     bpy.context.user_preferences.system.use_international_fonts = True
     #bpy.context.user_preferences.system.language = 'ja_JP'
 
+
+class PymeshioAddonPreferences(bpy.types.AddonPreferences):
+    bl_idname = __name__
+
+    use_mqo_menu = bpy.props.BoolProperty(
+        name='enable mqo importer/exporter menu',
+        default=False)
+
+    use_pmd_menu = bpy.props.BoolProperty(
+        name='enable pmd importer/exporter menu',
+        default=False) 
+
+    def draw(self, context):
+        layout = self.layout
+        layout.prop(self, 'use_pmd_menu')
+        layout.prop(self, 'use_mqo_menu')
+        #layout.label(text='Path for PTVSD module. In macOS, path should be something like: "/Library/Frameworks/Python.framework/Versions/3.5/lib/python3.5/site-packages"')
+
+
 class ImportPmd(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
     '''Import from PMD file format (.pmd)'''
     bl_idname = 'import_scene.mmd_pmd'
@@ -239,21 +258,26 @@ class ExportMqo(bpy.types.Operator, bpy_extras.io_utils.ExportHelper):
 
 def register():
     bpy.utils.register_module(__name__)
-    bpy.types.INFO_MT_file_import.append(ImportPmd.menu_func)
+
+    user_preferences = bpy.context.user_preferences
+    addon_prefs = user_preferences.addons[__name__].preferences
+    if addon_prefs.use_mqo_menu:
+        bpy.types.INFO_MT_file_import.append(ImportMqo.menu_func)
+        bpy.types.INFO_MT_file_export.append(ExportMqo.menu_func)
+    if addon_prefs.use_pmd_menu:
+        bpy.types.INFO_MT_file_import.append(ImportPmd.menu_func)
+        bpy.types.INFO_MT_file_export.append(ExportPmd.menu_func)
     bpy.types.INFO_MT_file_import.append(ImportPmx.menu_func)
-    bpy.types.INFO_MT_file_import.append(ImportMqo.menu_func)
-    bpy.types.INFO_MT_file_export.append(ExportPmd.menu_func)
     bpy.types.INFO_MT_file_export.append(ExportPmx.menu_func)
-    bpy.types.INFO_MT_file_export.append(ExportMqo.menu_func)
 
 def unregister():
-    bpy.utils.unregister_module(__name__)
     bpy.types.INFO_MT_file_import.remove(ImportPmd.menu_func)
     bpy.types.INFO_MT_file_import.remove(ImportPmx.menu_func)
     bpy.types.INFO_MT_file_import.remove(ImportMqo.menu_func)
     bpy.types.INFO_MT_file_export.remove(ExportPmd.menu_func)
     bpy.types.INFO_MT_file_export.remove(ExportPmx.menu_func)
     bpy.types.INFO_MT_file_export.remove(ExportMqo.menu_func)
+    bpy.utils.unregister_module(__name__)
 
 
 if __name__=='__main__':
