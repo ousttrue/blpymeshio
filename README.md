@@ -15,9 +15,10 @@ select (Add-Ons) tab.
 
 ## ToDo
 
-* [ ] default physics import to false
-* [ ] legacy import_pmd, import_mqo, export mqo to hide
-* [ ] add scaling option
+* [ ] [inverted pelvis](https://dskjal.com/blender/rigging-pelvis.html)
+* [x] default physics import to false
+* [x] legacy import_pmd, import_mqo, export mqo to hide
+* [x] add scaling option
 
 ## create zip archive
 
