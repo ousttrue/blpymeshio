@@ -102,9 +102,9 @@ class ImportPmx(bpy.types.Operator, bpy_extras.io_utils.ImportHelper):
 
     import_scale = bpy.props.FloatProperty(
             name='import scale',
-            description='scaling value',
+            description='to meter(1.58/20)',
             min=0.0001, max=1000000.0,
-            soft_min=0.001, soft_max=100.0, default=1.58/20)
+            soft_min=0.001, soft_max=100.0, default=1.0)
 
     def execute(self, context):
         from . import import_pmx

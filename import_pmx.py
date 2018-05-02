@@ -233,7 +233,7 @@ def __create_a_material(m, name, textures_and_images):
         print("unknown sphere mode:", m.sphere_mode)
     return material
 
-def __create_armature(bones, display_slots):
+def __create_armature(bones, display_slots, import_scale):
     """
     :Params:
         bones
@@ -251,21 +251,21 @@ def __create_armature(bones, display_slots):
         bone=bl.armature.createBone(armature, b.name)
         bone[bl.BONE_ENGLISH_NAME]=b.english_name
         # bone position
-        bone.head=bl.createVector(*convert_coord(b.position))
+        bone.head=bl.createVector(*convert_coord(b.position * import_scale))
         if b.getConnectionFlag():
             # dummy tail
-            bone.tail=bone.head+bl.createVector(0, 1, 0)
+            bone.tail=bone.head+bl.createVector(0, import_scale, 0)
         else:
             # offset tail
             bone.tail=bone.head+bl.createVector(
-                    *convert_coord(b.tail_position))
+                    *convert_coord(b.tail_position * import_scale))
             if bone.tail==bone.head:
                 # 捻りボーン
-                bone.tail=bone.head+bl.createVector(0, 0.01, 0)
+                bone.tail=bone.head+bl.createVector(0, 0.01 * import_scale, 0)
             pass
         if not b.getVisibleFlag():
             # dummy tail
-            bone.tail=bone.head+bl.createVector(0, 0.01, 0)
+            bone.tail=bone.head+bl.createVector(0, 0.01 * import_scale, 0)
         return bone
     bl_bones=[create_bone(b) for b in bones]
 
@@ -431,7 +431,7 @@ def import_pmx_model(filepath, model, import_mesh, import_physics, import_scale,
     root_object[bl.MMD_ENGLISH_COMMENT]=model.english_comment
 
     # armatureを作る
-    armature_object=__create_armature(model.bones, model.display_slots)
+    armature_object=__create_armature(model.bones, model.display_slots, import_scale)
     if armature_object:
         armature_object.parent=root_object
 
@@ -444,8 +444,8 @@ def import_pmx_model(filepath, model, import_mesh, import_physics, import_scale,
         print(textures_and_images)
 
         # 頂点配列。(Left handed y-up) to (Right handed z-up)
-        vertices=[convert_coord(pos)
-                for pos in (v.position for v in model.vertices)]
+        vertices = [convert_coord(v.position * import_scale)
+                    for v in model.vertices]
 
         ####################
         # mesh object
@@ -565,7 +565,7 @@ def import_pmx_model(filepath, model, import_mesh, import_physics, import_scale,
                         bl.shapekey.assign(new_shape_key, 
                                 o.vertex_index, 
                                 mesh.vertices[o.vertex_index].co+
-                                bl.createVector(*convert_coord(o.position_offset)))
+                                bl.createVector(*convert_coord(o.position_offset * import_scale)))
                     else:
                         print("unknown morph type: %s. drop" % o)
                         #raise Exception("unknown morph type: %s" % o)
